@@ -21,6 +21,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "com.rafa.qless",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBJjQi0sQXiW3jHuP_VEGct0-p4Pe7Rwts"
+        }
+      }
+    },
     "ios": {
       "supportsTablet": true
     }
