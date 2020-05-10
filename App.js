@@ -20,6 +20,7 @@ import {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    console.disableYellowBox = true;
     this.state = {
       hasError: false,
       showTheThing: false,
@@ -27,6 +28,7 @@ export default class App extends React.Component {
       local: {},
       searchButton: false,
       location: {},
+      locationType: 'restaurant',
       times: 0,
       color: '',
       changeRegion: false,
@@ -37,18 +39,31 @@ export default class App extends React.Component {
   }
   Share = async () => {
     try {
-
+      let message;
+      switch (this.state.color) {
+        case 'red':
+          message = `En ${this.state.local.name} hay muchisima cola, no vengas!`;
+          break;
+        case 'yellow':
+          message = `En ${this.state.local.name} hay algo de cola`;
+          break;
+        case 'green':
+          message = `En ${this.state.local.name} no hay casi cola, aprovecha!`;
+          break;
+        default:
+          message = `No se cuanta cola hay en ${this.state.local.name}`;
+      }
       const result = await Share.share({
-        message: 'React Native | A framework for building native apps using React',
+        message,
       });
     } catch (error) {
       console.log(error.message);
     }
   };
-  async fetchMarkerData(latitude, longitude) {
+  async fetchMarkerData(latitude, longitude, type) {
     try {
-      console.log(`http://192.168.0.17:3000/${latitude}/${longitude}`);
-      const response = await fetch(`http://192.168.0.17:3000/${latitude}/${longitude}`);
+      console.log(`http://192.168.0.17:3000/${latitude}/${longitude}/${type}`);
+      const response = await fetch(`http://192.168.0.17:3000/${latitude}/${longitude}/${type}`);
       const responseJson = await response.json();
       return responseJson;
     } catch (e) {
@@ -63,8 +78,8 @@ export default class App extends React.Component {
     const { status } = await Location.requestPermissionsAsync();
 
     if (status === 'granted') {
-      const location = await Location.getCurrentPositionAsync({});
-      const locals = await this.fetchMarkerData(location.coords.latitude, location.coords.longitude);
+      const location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+      const locals = await this.fetchMarkerData(location.coords.latitude, location.coords.longitude, this.state.locationType);
       const delta = {
         latitude: 0.01,
         longitude: 0.01
@@ -102,7 +117,8 @@ export default class App extends React.Component {
       body: JSON.stringify(body)
     });
     const content = await rawResponse.json();
-    console.log(content);
+    const locals = await this.fetchMarkerData(this.state.region.latitude, this.state.region.longitude, this.state.locationType);
+    this.setState({ locals, changeRegion: false });
   }
   roundStyle(color) {
     const ratio = color === 'yellow' ? 3 : 3.5;
@@ -132,8 +148,13 @@ export default class App extends React.Component {
 
   }
   async search() {
-    const locals = await this.fetchMarkerData(this.state.region.latitude, this.state.region.longitude);
+    const locals = await this.fetchMarkerData(this.state.region.latitude, this.state.region.longitude, this.state.locationType);
     this.setState({ searchButton: false, locals, location: this.state.region, changeRegion: false });
+  }
+  async searchTypes(type) {
+    this.setState({ locationType: type, changeRegion: true });
+    const locals = await this.fetchMarkerData(this.state.region.latitude, this.state.region.longitude, type);
+    this.setState({ locals, location: this.state.region, changeRegion: false });
   }
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState.changeRegion) {
@@ -317,21 +338,31 @@ export default class App extends React.Component {
               color="white"
             />)}
           buttonColor="rgba(231,76,60,1)">
-          <ActionButton.Item buttonColor='#9b59b6' title="Supermercados" onPress={() => console.log("notes tapped!")}>
+          <ActionButton.Item
+            buttonColor='#9b59b6'
+            title="Supermercados"
+            onPress={() => this.searchTypes('supermarket')}
+          >
             <Icon
               name="shopping-cart"
               size={24}
               color="white"
             />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#3498db' title="Restaurantes" onPress={() => { }}>
+          <ActionButton.Item
+            buttonColor='#3498db'
+            title="Restaurantes"
+            onPress={() => this.searchTypes('restaurant')}>
             <Icon
               name="beer"
               size={24}
               color="white"
             />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#1abc9c' title="Farmarcias" onPress={() => { }}>
+          <ActionButton.Item
+            buttonColor='#1abc9c'
+            title="Farmarcias"
+            onPress={() => this.searchTypes('pharmacy')}>
             <Icon
               name="flask"
               size={24}
