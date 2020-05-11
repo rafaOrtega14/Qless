@@ -4,6 +4,7 @@ import Menu from './components/Menu';
 import LocalCard from './components/LocalCard';
 import { Marker } from 'react-native-maps';
 import { calcCrow } from './helpers/distance';
+import Constants from 'expo-constants';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Location from 'expo-location';
@@ -28,6 +29,7 @@ export default class App extends React.Component {
       showTheThing: false,
       locals: [],
       local: {},
+      info: false,
       searchButton: false,
       location: {},
       locationType: 'restaurant',
@@ -91,6 +93,15 @@ export default class App extends React.Component {
       console.log({ error: 'Locations services needed' });
     }
   }
+  showInfo() {
+    if (this.state.showTheThing && this.state.info) {
+      this.fadeOut();
+      this.setState({ showTheThing: false, local: {}, changeRegion: false })
+    } else {
+      this.setState({ info: true, showTheThing: true, changeRegion: false })
+      this.fadeIn();
+    }
+  }
   async searchTypes(type) {
     this.setState({ locationType: type, changeRegion: true });
     const locals = await this.fetchMarkerData(this.state.region.latitude, this.state.region.longitude, type);
@@ -105,9 +116,8 @@ export default class App extends React.Component {
         latitude: local.geometry.location.lat,
         longitude: local.geometry.location.lng
       }
-      this.setState({ showTheThing: true, local, location, color: local.vote ? local.vote : '', changeRegion: false })
+      this.setState({ info: false, showTheThing: true, local, location, color: local.vote ? local.vote : '', changeRegion: false })
       this.fadeIn();
-
     }
   }
   changeColor(color) {
@@ -116,6 +126,7 @@ export default class App extends React.Component {
   async vote() {
     const body = this.state.local;
     body.vote = this.state.color;
+    body.userId = Constants.installationId;
     const rawResponse = await fetch('http://192.168.0.17:3000/', {
       method: 'POST',
       headers: {
@@ -125,7 +136,7 @@ export default class App extends React.Component {
       body: JSON.stringify(body)
     });
     const content = await rawResponse.json();
-    const locals = await this.fetchMarkerData(this.state.region.latitude, this.state.region.longitude, this.state.locationType);
+    const locals = await this.fetchMarkerData(this.state.location.latitude, this.state.location.longitude, this.state.locationType);
     this.setState({ locals, changeRegion: false });
   }
   roundStyle(color) {
@@ -237,14 +248,25 @@ export default class App extends React.Component {
           roundStyle={this.roundStyle.bind(this)}
           vote={this.vote.bind(this)}
           changeColor={this.changeColor.bind(this)}
+          info={this.state.info}
         />
         {this.state.searchButton && (
           <Button
             containerStyle={styles.floatingButton}
             title="Buscar en esta zona"
-            onPress={this.search.bind(this)}
+            onPress={this.search}
           />
         )}
+        <Button
+          containerStyle={styles.infoButton}
+          icon={<Icon
+            name="info"
+            size={35}
+            color="white"
+          />}
+          title=""
+          onPress={this.showInfo.bind(this)}
+        />
         <Menu
           searchTypes={this.searchTypes.bind(this)}
         />
@@ -257,6 +279,15 @@ const styles = StyleSheet.create({
   floatingButton: {
     position: 'absolute',
     top: 50
+  },
+  infoButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    backgroundColor: '#ee6e73',
+    position: 'absolute',
+    top: 280,
+    right: 30,
   },
   container: {
     flex: 1,

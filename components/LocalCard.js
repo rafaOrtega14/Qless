@@ -26,7 +26,7 @@ export default class LocalCard extends React.Component {
                     }
                 ]}
             >
-                {this.props.local.name && (
+                {this.props.local.name && !this.props.info && (
                     <ScrollView style={{ flex: 1 }}>
                         <View style={styles.roundContainer}>
                             <Text style={styles.localTitle}>{this.props.local.name}</Text>
@@ -92,6 +92,20 @@ export default class LocalCard extends React.Component {
                         />
                     </ScrollView>
                 )}
+                {this.props.info && (
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.infoTitle}>Acerca de la aplicación</Text>
+                        <Text style={styles.infoText}>
+                            Mostramos como de llenos están los restaurantes, farmacias o
+                        Supermercados.
+                        </Text>
+                        <Text style={styles.infoText}>
+                            Podrás dejarnos tu voto pulsando sobre alguno de los
+                        circulos sabiendo que Rojo es que el sitio está muy lleno, naranja
+                        es que está moderadamente lleno y verde significa que no hay mucha gente.
+                    </Text>
+                    </View>
+                )}
             </Animated.View>
         );
     }
@@ -101,6 +115,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 5,
+    },
+    infoContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    infoTitle: {
+        fontSize: 24,
+        marginTop: 10,
+    },
+    infoText: {
+        fontSize: 18,
+        marginLeft: 20,
+        marginTop: 10,
     },
     shareButton: {
         width: Dimensions.get('window').width / 1.2,
