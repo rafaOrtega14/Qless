@@ -66,8 +66,8 @@ export default class App extends React.Component {
   };
   async fetchMarkerData(latitude, longitude, type) {
     try {
-      console.log(`http://192.168.0.17:3000/${latitude}/${longitude}/${type}`);
-      const response = await fetch(`http://192.168.0.17:3000/${latitude}/${longitude}/${type}`);
+      console.log(`https://qless-app.herokuapp.com/${latitude}/${longitude}/${type}`);
+      const response = await fetch(`https://qless-app.herokuapp.com/${latitude}/${longitude}/${type}`);
       const responseJson = await response.json();
       return responseJson;
     } catch (e) {
@@ -127,7 +127,7 @@ export default class App extends React.Component {
     const body = this.state.local;
     body.vote = this.state.color;
     body.userId = Constants.installationId;
-    const rawResponse = await fetch('http://192.168.0.17:3000/', {
+    const rawResponse = await fetch('https://qless-app.herokuapp.com/', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -254,7 +254,7 @@ export default class App extends React.Component {
           <Button
             containerStyle={styles.floatingButton}
             title="Buscar en esta zona"
-            onPress={this.search}
+            onPress={this.search.bind(this)}
           />
         )}
         <Button
