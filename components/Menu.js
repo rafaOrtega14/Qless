@@ -12,11 +12,11 @@ export default class Menu extends React.Component {
         offsetx={10}
         renderIcon={(active) => (active ? <Icon
           name="times"
-          size={24}
+          size={30}
           color="white"
         /> : <Icon
-            name="search"
-            size={24}
+            name="ellipsis-v"
+            size={30}
             color="white"
           />)}
         buttonColor="rgba(231,76,60,1)">
@@ -27,6 +27,17 @@ export default class Menu extends React.Component {
         >
           <Icon
             name="shopping-cart"
+            size={24}
+            color="white"
+          />
+        </ActionButton.Item>
+        <ActionButton.Item
+          buttonColor='#ff5722'
+          title="Información"
+          onPress={this.props.showInfo}
+        >
+          <Icon
+            name="info"
             size={24}
             color="white"
           />

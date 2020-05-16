@@ -20,7 +20,7 @@ export default class LocalCard extends React.Component {
         return (
             <Animated.View
                 style={[
-                    styles.address,
+                    this.props.showTheThing ? styles.addressIndex : styles.address,
                     {
                         opacity: this.props.opacity,
                     }
@@ -159,6 +159,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     address: {
+        position: 'absolute',
+        bottom: 0,
+        zIndex: -1,
+        backgroundColor: '#ffffff',
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+        width: Dimensions.get('window').width / 1.1,
+        height: Dimensions.get('window').height / 2.5,
+    },
+    addressIndex: {
         position: 'absolute',
         bottom: 0,
         backgroundColor: '#ffffff',

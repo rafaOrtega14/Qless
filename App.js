@@ -5,6 +5,8 @@ import LocalCard from './components/LocalCard';
 import { Marker } from 'react-native-maps';
 import { calcCrow } from './helpers/distance';
 import Constants from 'expo-constants';
+import publicIP from 'react-native-public-ip';
+import ActionButton from 'react-native-action-button';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Location from 'expo-location';
@@ -80,15 +82,29 @@ export default class App extends React.Component {
   }
   async componentDidMount() {
     const { status } = await Location.requestPermissionsAsync();
-
     if (status === 'granted') {
-      const location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-      const locals = await this.fetchMarkerData(location.coords.latitude, location.coords.longitude, this.state.locationType);
-      const delta = {
-        latitude: 0.01,
-        longitude: 0.01
+      try {
+        const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+        const locals = await this.fetchMarkerData(location.coords.latitude, location.coords.longitude, this.state.locationType);
+        const delta = {
+          latitude: 0.01,
+          longitude: 0.01
+        }
+        this.setState({ location: location.coords, delta, locals });
+      } catch (e) {
+        console.log('Calling https//freegeoip.app/json')
+        const responseLoc = await fetch(`https://freegeoip.app/json`);
+        const responseJsonLoc = await responseLoc.json();
+        const latitude = responseJsonLoc.latitude;
+        const longitude = responseJsonLoc.longitude;
+        console.log(latitude, longitude)
+        const locals = await this.fetchMarkerData(latitude, longitude, this.state.locationType);
+        const delta = {
+          latitude: 0.01,
+          longitude: 0.01
+        }
+        this.setState({ location: { latitude, longitude }, delta, locals });
       }
-      this.setState({ location: location.coords, delta, locals });
     } else {
       console.log({ error: 'Locations services needed' });
     }
@@ -204,6 +220,8 @@ export default class App extends React.Component {
               longitudeDelta: this.state.delta.longitude
             }}
             loadingEnabled={true}
+            scrollEnabled={true}
+            showsMyLocationButton={true}
             loadingIndicatorColor="#666666"
             loadingBackgroundColor="#eeeeee"
             moveOnMarkerPress={false}
@@ -244,6 +262,7 @@ export default class App extends React.Component {
         <LocalCard
           local={this.state.local}
           opacity={this.state.opacity}
+          showTheThing={this.state.showTheThing}
           Share={this.Share.bind(this)}
           roundStyle={this.roundStyle.bind(this)}
           vote={this.vote.bind(this)}
@@ -257,20 +276,12 @@ export default class App extends React.Component {
             onPress={this.search.bind(this)}
           />
         )}
-        <Button
-          containerStyle={styles.infoButton}
-          icon={<Icon
-            name="info"
-            size={35}
-            color="white"
-          />}
-          title=""
-          onPress={this.showInfo.bind(this)}
-        />
         <Menu
           searchTypes={this.searchTypes.bind(this)}
+          showInfo={this.showInfo.bind(this)}
         />
-      </View >
+      </View>
+
     );
   }
 }
