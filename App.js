@@ -16,6 +16,7 @@ import {
   ScrollView,
   Text,
   View,
+  ActivityIndicator,
   Dimensions,
   Share,
   Image,
@@ -48,16 +49,16 @@ export default class App extends React.Component {
       let message;
       switch (this.state.color) {
         case 'red':
-          message = `En ${this.state.local.name} hay muchisima cola, no vengas!`;
+          message = `La Comunidad Crowdia sugiere que el local ${this.state.local.name} localizado en ${this.state.local.vicinity} está muy concurrido. ¡Tú mismo decides!`;
           break;
         case 'yellow':
-          message = `En ${this.state.local.name} hay algo de cola`;
+          message = `La Comunidad Crowdia sugiere que el local ${this.state.local.name} localizada en ${this.state.local.vicinity} está medianamente concurrido. ¡Ten paciéncia!`;
           break;
         case 'green':
-          message = `En ${this.state.local.name} no hay casi cola, aprovecha!`;
+          message = ` La Comunidad Crowdia sugiere que el local ${this.state.local.name} localizado en ${this.state.local.vicinity} se respetan las distancias sociales y turnos ¡Visítalo sin preocupaciones!`;
           break;
         default:
-          message = `No se cuanta cola hay en ${this.state.local.name}`;
+          message = `La Comunidad Crowdia sugiere que votes al local ${this.state.local.name} localizado en ${this.state.local.vicinity} ¡Tú mismo decides!`;
       }
       const result = await Share.share({
         message,
@@ -156,7 +157,7 @@ export default class App extends React.Component {
     this.setState({ locals, changeRegion: false });
   }
   roundStyle(color) {
-    const ratio = color === 'yellow' ? 3 : 3.5;
+    const ratio = 3.5;
     if (this.state.color === color) {
       return {
         height: (Dimensions.get('window').width / 1.1) / ratio,
@@ -211,7 +212,7 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.location.latitude && (
+        {this.state.location.latitude ? (
           <MapView
             region={{
               latitude: this.state.location.latitude,
@@ -222,8 +223,8 @@ export default class App extends React.Component {
             loadingEnabled={true}
             scrollEnabled={true}
             showsMyLocationButton={true}
-            loadingIndicatorColor="#666666"
-            loadingBackgroundColor="#eeeeee"
+            loadingIndicatorColor="#80C2C6"
+            loadingBackgroundColor="#80C2C6"
             moveOnMarkerPress={false}
             showsUserLocation={true}
             showsCompass={true}
@@ -258,7 +259,12 @@ export default class App extends React.Component {
               );
             })}
           </MapView>
-        )}
+        ) : (
+            <View style={styles.container}>
+              <Image source={require('./assets/logoScreen.png')} style={styles.logo} />
+            </View>
+          )
+        }
         <LocalCard
           local={this.state.local}
           opacity={this.state.opacity}
@@ -276,10 +282,13 @@ export default class App extends React.Component {
             onPress={this.search.bind(this)}
           />
         )}
-        <Menu
-          searchTypes={this.searchTypes.bind(this)}
-          showInfo={this.showInfo.bind(this)}
-        />
+        {this.state.location.latitude && (
+          <Menu
+            searchTypes={this.searchTypes.bind(this)}
+            showInfo={this.showInfo.bind(this)}
+          />
+        )}
+
       </View>
 
     );
@@ -290,6 +299,17 @@ const styles = StyleSheet.create({
   floatingButton: {
     position: 'absolute',
     top: 50
+  },
+  logo: {
+    width: Dimensions.get('window').width,
+    height: 150,
+    justifyContent: 'center',
+  },
+  appTitle: {
+    fontSize: 50,
+    justifyContent: 'center',
+    color: "#ffffff",
+    fontWeight: "bold"
   },
   infoButton: {
     width: 50,
@@ -302,7 +322,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#80C2C6',
     alignItems: 'center',
     justifyContent: 'center',
   },

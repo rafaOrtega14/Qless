@@ -45,26 +45,26 @@ export default class LocalCard extends React.Component {
                                 activeOpacity={0.6}
                                 underlayColor="#ffffff"
                                 onPress={() => this.props.changeColor('green')}>
-                                <Image source={require('../assets/green.png')} style={this.props.roundStyle('green')} />
+                                <Image source={require('../assets/greenXL.png')} style={this.props.roundStyle('green')} />
                             </TouchableHighlight>
                             <TouchableHighlight
                                 activeOpacity={0.6}
                                 underlayColor="#ffffff"
                                 onPress={() => this.props.changeColor('yellow')}>
-                                <Image source={require('../assets/yellow.png')} style={this.props.roundStyle('yellow')} />
+                                <Image source={require('../assets/yellowXL.png')} style={this.props.roundStyle('yellow')} />
                             </TouchableHighlight>
                             <TouchableHighlight
                                 activeOpacity={0.6}
                                 underlayColor="#ffffff"
                                 onPress={() => this.props.changeColor('red')}>
-                                <Image source={require('../assets/red.png')} style={this.props.roundStyle('red')} />
+                                <Image source={require('../assets/redXL.png')} style={this.props.roundStyle('red')} />
                             </TouchableHighlight>
                         </View>
                         <Button
                             containerStyle={styles.buttonContainer}
                             buttonStyle={styles.contribute}
                             onPress={this.props.vote}
-                            title="CONTRIBUTE"
+                            title="VOTAR"
                             iconRight={true}
                             icon={
                                 <Icon
@@ -78,7 +78,7 @@ export default class LocalCard extends React.Component {
                         <Button
                             containerStyle={styles.buttonContainer}
                             buttonStyle={styles.shareButton}
-                            title="SHARE"
+                            title="COMPARTIR"
                             onPress={this.props.Share}
                             iconRight={true}
                             icon={
@@ -93,18 +93,19 @@ export default class LocalCard extends React.Component {
                     </ScrollView>
                 )}
                 {this.props.info && (
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.infoTitle}>Acerca de la aplicación</Text>
-                        <Text style={styles.infoText}>
-                            Mostramos como de llenos están los restaurantes, farmacias o
-                        Supermercados.
+                    <ScrollView style={{ flex: 1 }}>
+                        <View style={styles.infoContainer}>
+                            <Text style={styles.infoTitle}>Acerca de la aplicación</Text>
+                            <Text style={styles.infoText}>
+                                Crowdia se nutre de la información que proporciona la comunidad para mostrarte como de concurrido están los establecimientos y lugares de tu alrededor. De esta manera puedes saber donde se encuentran las aglomeraciones de gente y planear tu momento de manera inteligente. Comparte y ayuda informando a la comunidad.
                         </Text>
-                        <Text style={styles.infoText}>
-                            Podrás dejarnos tu voto pulsando sobre alguno de los
-                        circulos sabiendo que Rojo es que el sitio está muy lleno, naranja
-                        es que está moderadamente lleno y verde significa que no hay mucha gente.
-                    </Text>
-                    </View>
+                            <Text style={styles.infoText}>
+                                Crowdia divide la información en cuatro colores para que la comunidad pueda diferenciar los diferentes niveles de aglomeraciones que hay en los establecimientos</Text>
+                            <Text style={styles.infoText}>VERDE: se respeta la distancia social y hay agilidad en el establecimiento</Text>
+                            <Text style={styles.infoText}>NARANJA: Hay una menor agilidad, lo que hace que sea medianamente difícil respetar la distancia física</Text>
+                            <Text style={styles.infoText}>ROJO: Hay mucha cantidad de gente y es muy difícil respetar las distancias físicas</Text>
+                        </View>
+                    </ScrollView>
                 )}
             </Animated.View>
         );
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     infoText: {
-        fontSize: 18,
+        fontSize: 16,
         marginLeft: 20,
         marginTop: 10,
     },

@@ -19,7 +19,7 @@ export default class Menu extends React.Component {
             size={30}
             color="white"
           />)}
-        buttonColor="rgba(231,76,60,1)">
+        buttonColor="#80C2C6">
         <ActionButton.Item
           buttonColor='#9b59b6'
           title="Supermercados"
