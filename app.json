@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/Images/icon.png",
     "updates": {
@@ -17,7 +17,7 @@
       "**/*"
     ],
     "android": {
-      "package": "com.rafa.qless",
+      "package": "com.pershopper.crowdia",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBJjQi0sQXiW3jHuP_VEGct0-p4Pe7Rwts"

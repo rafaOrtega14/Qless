@@ -10,6 +10,7 @@ export default class Menu extends React.Component {
       <ActionButton
         offsetY={300}
         offsetx={10}
+        buttonColor='#80C2C6'
         renderIcon={(active) => (active ? <Icon
           name="times"
           size={30}
@@ -18,19 +19,7 @@ export default class Menu extends React.Component {
             name="ellipsis-v"
             size={30}
             color="white"
-          />)}
-        buttonColor="#80C2C6">
-        <ActionButton.Item
-          buttonColor='#9b59b6'
-          title="Supermercados"
-          onPress={() => this.props.searchTypes('supermarket')}
-        >
-          <Icon
-            name="shopping-cart"
-            size={24}
-            color="white"
-          />
-        </ActionButton.Item>
+          />)}>
         <ActionButton.Item
           buttonColor='#ff5722'
           title="Información"
@@ -38,6 +27,17 @@ export default class Menu extends React.Component {
         >
           <Icon
             name="info"
+            size={24}
+            color="white"
+          />
+        </ActionButton.Item>
+        <ActionButton.Item
+          buttonColor='#9b59b6'
+          title="Supermercados"
+          onPress={() => this.props.searchTypes('supermarket')}
+        >
+          <Icon
+            name="shopping-cart"
             size={24}
             color="white"
           />

@@ -26,7 +26,7 @@ export default class LocalCard extends React.Component {
                     }
                 ]}
             >
-                {this.props.local.name && !this.props.info && (
+                {this.props.local.name && !this.props.info && this.props.showTheThing && (
                     <ScrollView style={{ flex: 1 }}>
                         <View style={styles.roundContainer}>
                             <Text style={styles.localTitle}>{this.props.local.name}</Text>
@@ -92,18 +92,33 @@ export default class LocalCard extends React.Component {
                         />
                     </ScrollView>
                 )}
-                {this.props.info && (
+                {this.props.info && this.props.showTheThing && (
                     <ScrollView style={{ flex: 1 }}>
                         <View style={styles.infoContainer}>
-                            <Text style={styles.infoTitle}>Acerca de la aplicación</Text>
+                            <Text style={styles.infoTitle}>¿Cómo funciona Crowdia?</Text>
                             <Text style={styles.infoText}>
                                 Crowdia se nutre de la información que proporciona la comunidad para mostrarte como de concurrido están los establecimientos y lugares de tu alrededor. De esta manera puedes saber donde se encuentran las aglomeraciones de gente y planear tu momento de manera inteligente. Comparte y ayuda informando a la comunidad.
                         </Text>
                             <Text style={styles.infoText}>
                                 Crowdia divide la información en cuatro colores para que la comunidad pueda diferenciar los diferentes niveles de aglomeraciones que hay en los establecimientos</Text>
-                            <Text style={styles.infoText}>VERDE: se respeta la distancia social y hay agilidad en el establecimiento</Text>
-                            <Text style={styles.infoText}>NARANJA: Hay una menor agilidad, lo que hace que sea medianamente difícil respetar la distancia física</Text>
-                            <Text style={styles.infoText}>ROJO: Hay mucha cantidad de gente y es muy difícil respetar las distancias físicas</Text>
+
+                            <Text style={styles.infoText}>
+                                <Image
+                                    style={styles.tinyLogo}
+                                    source={require('../assets/green.png')}
+                                /> Se respeta la distancia social y hay agilidad en el establecimiento</Text>
+                            <Text style={styles.infoText}>
+                                <Image
+                                    style={styles.tinyLogo}
+                                    source={require('../assets/yellow.png')}
+                                />
+                                Hay una menor agilidad, lo que hace que sea medianamente difícil respetar la distancia física</Text>
+                            <Text style={styles.infoText}>
+                                <Image
+                                    style={styles.tinyLogo}
+                                    source={require('../assets/red.png')}
+                                />
+                                Hay mucha cantidad de gente y es muy difícil respetar las distancias físicas</Text>
                         </View>
                     </ScrollView>
                 )}
@@ -116,6 +131,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 5,
+    },
+    tinyLogo: {
+        height: 35,
+        width: 35
     },
     infoContainer: {
         alignItems: 'center',

@@ -33,6 +33,12 @@ export default class App extends React.Component {
       locals: [],
       local: {},
       info: false,
+      buttonColor: "#ff5722",
+      renderIcon: <Icon
+        name="info"
+        size={24}
+        color="white"
+      />,
       searchButton: false,
       location: {},
       locationType: 'restaurant',
@@ -93,12 +99,11 @@ export default class App extends React.Component {
         }
         this.setState({ location: location.coords, delta, locals });
       } catch (e) {
-        console.log('Calling https//freegeoip.app/json')
+        console.log('Calling https//freegeoip.app/json');
         const responseLoc = await fetch(`https://freegeoip.app/json`);
         const responseJsonLoc = await responseLoc.json();
         const latitude = responseJsonLoc.latitude;
         const longitude = responseJsonLoc.longitude;
-        console.log(latitude, longitude)
         const locals = await this.fetchMarkerData(latitude, longitude, this.state.locationType);
         const delta = {
           latitude: 0.01,
@@ -106,6 +111,7 @@ export default class App extends React.Component {
         }
         this.setState({ location: { latitude, longitude }, delta, locals });
       }
+      this.showInfo();
     } else {
       console.log({ error: 'Locations services needed' });
     }
@@ -115,14 +121,52 @@ export default class App extends React.Component {
       this.fadeOut();
       this.setState({ showTheThing: false, local: {}, changeRegion: false })
     } else {
-      this.setState({ info: true, showTheThing: true, changeRegion: false })
+      this.setState({
+        info: true,
+        showTheThing: true,
+        changeRegion: false,
+        buttonColor: '#ff5722',
+        renderIcon: <Icon
+          name="info"
+          size={24}
+          color="white"
+        />
+      })
       this.fadeIn();
     }
   }
   async searchTypes(type) {
+    let buttonColor;
+    let renderIcon;
+    switch (type) {
+      case 'supermarket':
+        buttonColor = "#9b59b6";
+        renderIcon = <Icon
+          name="shopping-cart"
+          size={24}
+          color="white"
+        />
+        break;
+      case 'restaurant':
+        buttonColor = '#3498db'
+        renderIcon = <Icon
+          name="beer"
+          size={24}
+          color="white"
+        />
+        break;
+      case 'pharmacy':
+        buttonColor = '#1abc9c'
+        renderIcon = <Icon
+          name="flask"
+          size={24}
+          color="white"
+        />
+    }
     this.setState({ locationType: type, changeRegion: true });
     const locals = await this.fetchMarkerData(this.state.region.latitude, this.state.region.longitude, type);
-    this.setState({ locals, location: this.state.region, changeRegion: false });
+    this.setState({ locals, location: this.state.region, changeRegion: false, buttonColor, renderIcon });
+    this.fadeOut()
   }
   markerClick(local) {
     if (this.state.showTheThing && local.name === this.state.local.name) {
@@ -153,6 +197,7 @@ export default class App extends React.Component {
       body: JSON.stringify(body)
     });
     const content = await rawResponse.json();
+    console.log(JSON.stringify(body))
     const locals = await this.fetchMarkerData(this.state.location.latitude, this.state.location.longitude, this.state.locationType);
     this.setState({ locals, changeRegion: false });
   }
@@ -175,7 +220,7 @@ export default class App extends React.Component {
   onRegionChange(region) {
     if (this.state.location) {
       const distance = calcCrow(this.state.location.latitude, this.state.location.longitude, region.latitude, region.longitude);
-      if (distance > 3 && this.state.times > 5) {
+      if (distance > 1 && this.state.times > 5) {
         this.setState({ searchButton: true, location: region, changeRegion: false })
       } else {
         this.setState({ region, times: this.state.times + 1, changeRegion: true });
@@ -206,6 +251,7 @@ export default class App extends React.Component {
       toValue: 0,
       duration: 500
     }).start();
+    this.setState({ showTheThing: false, info: false })
   };
 
 
@@ -262,6 +308,7 @@ export default class App extends React.Component {
         ) : (
             <View style={styles.container}>
               <Image source={require('./assets/logoScreen.png')} style={styles.logo} />
+              <ActivityIndicator size="large" color="#ffffff" />
             </View>
           )
         }
@@ -288,7 +335,19 @@ export default class App extends React.Component {
             showInfo={this.showInfo.bind(this)}
           />
         )}
-
+        {this.state.location.latitude && (
+          <ActionButton
+            offsetY={300}
+            offsetX={300}
+            buttonColor={this.state.buttonColor}
+            renderIcon={(active) => (
+              active ? <Icon
+                name="beer"
+                size={30}
+                color="white"
+              /> : this.state.renderIcon)}>
+          </ActionButton>
+        )}
       </View>
 
     );
